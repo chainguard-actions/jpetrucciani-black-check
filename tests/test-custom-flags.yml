@@ -1,0 +1,30 @@
+name: Test black-check with custom flags (line-length)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create long-line Python file in workspace
+        run: |
+          printf 'result = some_function(argument_one, argument_two, argument_three, argument_four, argument_five)\n' > "$GITHUB_WORKSPACE/test_longline.py"
+          cat "$GITHUB_WORKSPACE/test_longline.py"
+
+      - id: action
+        uses: .
+        with:
+          path: test_longline.py
+          black_flags: "--line-length 120"
+
+      - name: Assert action succeeded with custom line-length flag
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected action to succeed with --line-length 120, but got outcome '$OUTCOME'"
+            exit 1
+          fi
+          echo "PASS: action correctly passed with custom --line-length flag"

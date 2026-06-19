@@ -1,0 +1,29 @@
+name: Test black-check basic (formatted file passes)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create formatted Python file in workspace
+        run: |
+          printf 'def hello():\n    print("hello")\n' > "$GITHUB_WORKSPACE/test_good.py"
+          cat "$GITHUB_WORKSPACE/test_good.py"
+
+      - id: action
+        uses: .
+        with:
+          path: test_good.py
+
+      - name: Assert action succeeded (black check passed for formatted file)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected action to succeed for properly formatted Python code, but got outcome '$OUTCOME'"
+            exit 1
+          fi
+          echo "PASS: action correctly passed for properly formatted Python code"

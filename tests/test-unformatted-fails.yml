@@ -1,0 +1,30 @@
+name: Test black-check unformatted (badly formatted file fails)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create unformatted Python file in workspace
+        run: |
+          printf 'def hello( ):\n    print( "hello" )\n' > "$GITHUB_WORKSPACE/test_bad.py"
+          cat "$GITHUB_WORKSPACE/test_bad.py"
+
+      - id: action
+        uses: .
+        with:
+          path: test_bad.py
+        continue-on-error: true
+
+      - name: Assert action failed (black check detected unformatted code)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail for unformatted Python code, but got outcome '$OUTCOME'"
+            exit 1
+          fi
+          echo "PASS: action correctly failed for unformatted Python code"
