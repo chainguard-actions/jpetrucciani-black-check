@@ -1,0 +1,21 @@
+name: Test custom flags - black_flags input is passed through
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # The long_line.py file has a line ~99 chars long.
+      # With --line-length 120 black should accept it as-is (no reformatting needed).
+      - id: action
+        uses: .
+        with:
+          path: tests/fixtures/long_line.py
+          black_flags: '--line-length 120'
+
+      - name: Assert black check passed with custom line length
+        run: |
+          echo "Black check passed with --line-length 120 on long-line file"
+          echo "PASS"

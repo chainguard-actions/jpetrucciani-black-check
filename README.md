@@ -1,14 +1,40 @@
-# jpetrucciani/black-check
+# black-check
 
-GitHub action to run black on your python repository
+GitHub Action for [black](https://github.com/psf/black)
 
-Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/jpetrucciani/black-check](https://github.com/jpetrucciani/black-check).
+## Inputs
 
-## Versions
+### `path`
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| 26.5.0 | [`26.5.0`](https://github.com/chainguard-actions/jpetrucciani-black-check/tree/26.5.0) | [`163ff78`](https://github.com/jpetrucciani/black-check/commit/163ff787b73aa307bf7fc09abee561248c295ef5) |
+**Optional** The path to run black on
+
+**Default** `"."`
+
+### `black_flags`
+
+**Optional** Optional black flags (refer to `black --help`)
+
+**Default** `""`
+
+## Outputs
+
+None
+
+## Example usage
+
+```yaml
+uses: jpetrucciani/black-check@master
+
+# or specify a path!
+uses: jpetrucciani/black-check@master
+with:
+  path: '.'
+
+# or specify more flags!
+uses: jpetrucciani/black-check@master
+with:
+  black_flags: '--exclude ./env/'
+```
 
 ## Privacy
 
