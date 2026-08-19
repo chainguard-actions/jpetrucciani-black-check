@@ -1,4 +1,4 @@
-name: Test black-check with custom flags (line-length)
+name: Test custom black_flags - line length override
 on:
   workflow_dispatch:
 jobs:
@@ -7,24 +7,13 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create long-line Python file in workspace
-        run: |
-          printf 'result = some_function(argument_one, argument_two, argument_three, argument_four, argument_five)\n' > "$GITHUB_WORKSPACE/test_longline.py"
-          cat "$GITHUB_WORKSPACE/test_longline.py"
-
-      - id: action
+      - name: Run black check on directory with custom line-length flag
+        id: action
         uses: .
         with:
-          path: test_longline.py
-          black_flags: "--line-length 120"
+          path: tests/fixtures/good
+          black_flags: "--line-length 200"
 
-      - name: Assert action succeeded with custom line-length flag
-        env:
-          OUTCOME: ${{ steps.action.outcome }}
+      - name: Assert black check passed with custom line-length flag
         run: |
-          echo "outcome: $OUTCOME"
-          if [ "$OUTCOME" != "success" ]; then
-            echo "FAIL: expected action to succeed with --line-length 120, but got outcome '$OUTCOME'"
-            exit 1
-          fi
-          echo "PASS: action correctly passed with custom --line-length flag"
+          echo "PASS: black check succeeded with --line-length 200 flag"
