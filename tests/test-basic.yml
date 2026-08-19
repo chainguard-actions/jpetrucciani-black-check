@@ -1,4 +1,4 @@
-name: Test basic - well-formatted Python passes black check
+name: Test basic usage - formatted code passes
 on:
   workflow_dispatch:
 jobs:
@@ -6,13 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - id: action
         uses: .
         with:
-          path: tests/fixtures/good.py
-
-      - name: Assert black check passed on well-formatted file
+          path: tests/fixtures/formatted
+      - name: Assert action succeeded
         run: |
-          echo "Black check completed successfully on well-formatted code"
+          echo "Black check passed on properly formatted code"
           echo "PASS"
