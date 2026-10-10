@@ -1,0 +1,18 @@
+name: Test basic usage - formatted file passes
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          path: tests/fixtures/formatted.py
+      - name: Assert action succeeded and output is set
+        env:
+          OUTPUT: ${{ steps.action.outputs.output }}
+        run: |
+          echo "output: $OUTPUT"
+          echo "PASS: black check passed on well-formatted file"
